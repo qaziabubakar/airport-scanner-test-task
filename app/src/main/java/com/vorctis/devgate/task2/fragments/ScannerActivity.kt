@@ -85,30 +85,10 @@ class ScannerActivity {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(0.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Button to request permission
-            Button(
-                onClick = {
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.CAMERA
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        isPermissionGranted = true
-                        barcodeScanHelper.startScanning()
-                    } else {
-                        permissionLauncher.launch(Manifest.permission.CAMERA)
-                    }
-                }
-            ) {
-                Text("Start Barcode Scanning")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             if (isPermissionGranted) {
                 AndroidView(
                     factory = { barcodeScanHelper.getDataCaptureView() },
