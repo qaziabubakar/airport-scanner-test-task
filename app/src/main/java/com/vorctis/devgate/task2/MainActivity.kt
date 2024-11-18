@@ -9,8 +9,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.vorctis.devgate.task2.fragments.HomeScreen
-import com.vorctis.devgate.task2.fragments.NextScreen
+import com.vorctis.devgate.task2.fragments.SplashScreen
+import com.vorctis.devgate.task2.fragments.MainListScreen
 import com.vorctis.devgate.task2.ui.theme.ComposePracticeTheme
 import com.vorctis.devgate.task2.utils.Routes
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,14 +35,14 @@ fun myNavigationComponent() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.Home.route
+        startDestination = Routes.Splash.route
     ) {
-        composable(Routes.Home.route) {
-            val home = HomeScreen()
+        composable(Routes.Splash.route) {
+            val home = SplashScreen()
             home.content(navController)
         }
-        composable(Routes.Next.route) {
-            val next = NextScreen()
+        composable(Routes.MainListScreen.route) {
+            val next = MainListScreen()
             next.content(navController)
         }
     }
