@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.vorctis.devgate.task2.fragments.LocationSelectedScreen
 import com.vorctis.devgate.task2.fragments.SplashScreen
 import com.vorctis.devgate.task2.fragments.MainListScreen
 import com.vorctis.devgate.task2.fragments.ScannerActivity
@@ -52,8 +53,12 @@ fun myNavigationComponent() {
             searchBagTag.content(navController)
         }
         composable(Routes.ScannerScreen.route) {
-            val searchBagTag = ScannerActivity()
-            searchBagTag.content(navController)
+            val scanner = ScannerActivity()
+            scanner.content(navController)
+        }
+        composable(Routes.LocationSelectedScreen.route) {
+            val locationSelected = LocationSelectedScreen()
+            locationSelected.content(navController)
         }
     }
 }

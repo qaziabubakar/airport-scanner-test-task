@@ -1,45 +1,40 @@
 package com.vorctis.devgate.task2.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.vorctis.devgate.task2.R
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.content.ContextCompat
+import com.vorctis.devgate.task2.R
+import com.vorctis.devgate.task2.ui.materialcomponents.BagTagItem
 import com.vorctis.devgate.task2.utils.Routes
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 
 class SearchBagTagScreen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun content(navController: NavHostController) {
-
         val context = LocalContext.current
         var cameraPermissionGranted by remember { mutableStateOf(false) }
-
         val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope = rememberCoroutineScope()
 
@@ -60,8 +55,15 @@ class SearchBagTagScreen {
         var scannedData by remember { mutableStateOf("") }
         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
 
+        // Initialize persistent list of QR codes
+        var qrCodeList by remember { mutableStateOf(loadScannedValues(context)) }
+
         LaunchedEffect(savedStateHandle) {
             savedStateHandle?.get<String>("scannedData")?.let { result ->
+                if (result.isNotEmpty() && !qrCodeList.contains(result)) {
+                    qrCodeList = qrCodeList + result
+                    saveScannedValues(context, qrCodeList)
+                }
                 scannedData = result
                 savedStateHandle.remove<String>("scannedData")
             }
@@ -72,7 +74,7 @@ class SearchBagTagScreen {
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Search bag tag",
+                            text = "Search Bag Tag",
                             color = Color.White,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -85,16 +87,6 @@ class SearchBagTagScreen {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_arrow_back),
                                 contentDescription = "Back",
-                                tint = Color.White,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { /* Handle menu action */ }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_arrow_menu),
-                                contentDescription = "Menu",
                                 tint = Color.White,
                                 modifier = Modifier.size(24.dp)
                             )
@@ -122,9 +114,7 @@ class SearchBagTagScreen {
                     border = BorderStroke(1.dp, Color(0xFF00CCCC)),
                     color = Color(0xFF23233C)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
                         Text(
                             text = "Enter Bag Tag # to search for",
                             color = Color.White,
@@ -142,12 +132,9 @@ class SearchBagTagScreen {
                         ) {
                             TextField(
                                 value = scannedData,
-                                onValueChange = { /* Handle value change */ },
+                                onValueChange = { scannedData = it },
                                 placeholder = {
-                                    Text(
-                                        text = "Type here",
-                                        color = Color(0xFFA6A6A6)
-                                    )
+                                    Text(text = "Type here", color = Color(0xFFA6A6A6))
                                 },
                                 colors = TextFieldDefaults.textFieldColors(
                                     containerColor = Color.Transparent,
@@ -188,18 +175,45 @@ class SearchBagTagScreen {
                     }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Search results will appear here",
-                        color = Color(0xFFA6A6A6),
-                        fontSize = 16.sp
-                    )
+                Text(
+                    text = "Search results: ${qrCodeList.size}",
+                    color = Color(0xFFA6A6A6),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                LazyColumn {
+                    items(qrCodeList.size) { index ->
+                        BagTagItem(qrCode = qrCodeList[index],
+                            onDelete = {
+                                val updatedList = qrCodeList.toMutableList().apply { removeAt(index) }
+                                qrCodeList = updatedList
+                                saveScannedValues(context, updatedList)
+                            },
+                            onNext = { selectedLocation ->
+                                navController.currentBackStackEntry?.savedStateHandle?.set("selectedLocation", selectedLocation)
+                                navController.navigate(Routes.LocationSelectedScreen.route)
+                            },
+                        )
+                    }
                 }
+
             }
         }
+    }
+
+    private fun loadScannedValues(context: Context): List<String> {
+        val sharedPreferences = context.getSharedPreferences("qr_storage", Context.MODE_PRIVATE)
+        val jsonString = sharedPreferences.getString("scanned_values", "[]")
+        val jsonArray = JSONArray(jsonString)
+        return List(jsonArray.length()) { jsonArray.getString(it) }
+    }
+
+    private fun saveScannedValues(context: Context, values: List<String>) {
+        val sharedPreferences = context.getSharedPreferences("qr_storage", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val jsonArray = JSONArray(values)
+        editor.putString("scanned_values", jsonArray.toString())
+        editor.apply()
     }
 }
