@@ -1,32 +1,17 @@
 package com.vorctis.devgate.task2.fragments
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.core.content.ContextCompat
 import com.vorctis.devgate.task2.R
-import com.vorctis.devgate.task2.ui.materialcomponents.BagTagItem
-import com.vorctis.devgate.task2.utils.Routes
-import kotlinx.coroutines.launch
-import org.json.JSONArray
 
 class LocationSelectedScreen {
 

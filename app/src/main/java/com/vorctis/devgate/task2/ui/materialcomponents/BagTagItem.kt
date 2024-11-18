@@ -1,6 +1,5 @@
 package com.vorctis.devgate.task2.ui.materialcomponents
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,17 +56,17 @@ fun BagTagItem(qrCode: String, onDelete: () -> Unit, onNext: (String) -> Unit) {
                     text = qrCode,
                     color = Color.White,
                     fontSize = 16.sp,
-                    maxLines = 1 // Ensures the text doesn't overflow
+                    maxLines = 1
                 )
                 Text(
-                    text = "Gate 1b",  // Placeholder value
+                    text = "Gate 1b",
                     color = Color.White.copy(alpha = 0.7f),
                     fontSize = 14.sp
                 )
             }
 
             IconButton(
-                onClick = { onNext("$qrCode") },
+                onClick = { onNext(qrCode) },
                 modifier = Modifier.padding(start = 8.dp)
             ) {
                 Icon(
