@@ -154,6 +154,7 @@ class SearchBagTagScreen {
                                     .height(24.dp)
                             )
                             IconButton(onClick = {
+                                navController.currentBackStackEntry?.savedStateHandle?.remove<String>("scannedData")
                                 if (ContextCompat.checkSelfPermission(
                                         context,
                                         Manifest.permission.CAMERA
@@ -189,6 +190,8 @@ class SearchBagTagScreen {
                                 val updatedList = qrCodeList.toMutableList().apply { removeAt(index) }
                                 qrCodeList = updatedList
                                 saveScannedValues(context, updatedList)
+
+                                navController.currentBackStackEntry?.savedStateHandle?.remove<String>("scannedData")
                             },
                             onNext = { selectedLocation ->
                                 navController.currentBackStackEntry?.savedStateHandle?.set("selectedLocation", selectedLocation)
