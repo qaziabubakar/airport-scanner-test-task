@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.vorctis.devgate.task2.fragments.SplashScreen
 import com.vorctis.devgate.task2.fragments.MainListScreen
+import com.vorctis.devgate.task2.fragments.ScannerActivity
+import com.vorctis.devgate.task2.fragments.SearchBagTagScreen
 import com.vorctis.devgate.task2.ui.theme.ComposePracticeTheme
 import com.vorctis.devgate.task2.utils.Routes
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,12 +40,20 @@ fun myNavigationComponent() {
         startDestination = Routes.Splash.route
     ) {
         composable(Routes.Splash.route) {
-            val home = SplashScreen()
-            home.content(navController)
+            val splash = SplashScreen()
+            splash.content(navController)
         }
         composable(Routes.MainListScreen.route) {
-            val next = MainListScreen()
-            next.content(navController)
+            val mainList = MainListScreen()
+            mainList.content(navController)
+        }
+        composable(Routes.SearchBagTagScreen.route) {
+            val searchBagTag = SearchBagTagScreen()
+            searchBagTag.content(navController)
+        }
+        composable(Routes.ScannerScreen.route) {
+            val searchBagTag = ScannerActivity()
+            searchBagTag.content(navController)
         }
     }
 }

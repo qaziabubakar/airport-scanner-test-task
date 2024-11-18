@@ -85,6 +85,17 @@ dependencies {
 
     // constraint layout compose
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+    api("com.scandit.datacapture:core:6.28.1")
+    implementation("com.scandit.datacapture:barcode:6.28.1")
+}
+
+// Ensure consistent Kotlin versions to resolve duplicate classes
+configurations.all {
+    resolutionStrategy {
+        force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+        force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+    }
 }
 
 // Allow references to generated code

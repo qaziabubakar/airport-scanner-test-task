@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.vorctis.devgate.task2.ui.materialcomponents.HeaderWithMenuAndButton
+import com.vorctis.devgate.task2.utils.Routes
 
 class MainListScreen {
 
@@ -70,7 +71,7 @@ class MainListScreen {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { /* Search Bag Tag Action */ },
+                    onClick = { navController.navigate(Routes.SearchBagTagScreen.route) },
                     colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF00CCCC)
                     ),
